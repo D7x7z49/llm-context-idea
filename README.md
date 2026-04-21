@@ -11,6 +11,12 @@ The ideas collected in this repository explore what a minimal instruction set fo
 
 ## Core Ideas
 
+### The Forgetful Society: Memory Limits and Collective Progress
+
+What can a society achieve when every individual forgets almost everything after just a few actions? This thought experiment explores the necessary conditions for progress under extreme memory constraints. It draws on Amdahl's Law, Brooks's Law, information theory, and automata theory to argue that externalization, atomic decomposition, and environmental prompting are essential. Cooperation becomes crucial when individual capacity is smallest, but its benefits diminish and eventually turn negative as coordination overhead grows. The analogy maps directly to LLM agents: the context window is the forgetful memory, and persistent structures like the Issue Tree are the external notes that make long-lived projects possible.
+
+See [idea/forgetful-society.md](idea/forgetful-society.md) for the full reasoning, formal definitions, and implications for agent design.
+
 ### Issue Tree: Paths and Epistemic Nodes
 
 The Issue Tree provides an addressable, typed structure for agent conversation history. Each message is assigned a path like `/number/...` that encodes its position in the branching history of the dialogue. Four node types—Task, Question, Condition, and None—classify messages based on the sender's knowledge state and presupposition about the receiver. Combined with state rules (active, blocked, failed, completed), the tree serves as a call stack for the agent interpreter, enabling precise recall of reasoning chains across long project lifespans.
@@ -38,3 +44,13 @@ See [idea/lazy-tool-evaluation.md](idea/lazy-tool-evaluation.md) for the mechani
 Agents often rely on a generic shell tool for command execution, which leads to brittle pipelines, poor debuggability, and no accumulation of experience. This idea replaces ad-hoc shell commands with versioned script files stored in a two-level library organized by target and aspect. The script interpreter tool runs these artifacts, enabling idempotency, atomicity, and observability. Over time, the script library becomes a growing cognitive asset that strengthens the agent's operational vocabulary.
 
 See [idea/script-as-tool.md](idea/script-as-tool.md) for the full design, including the path convention, environment abstraction, and security boundaries.
+
+## A Note on Human Distinction: Recording and Retrieval
+
+What sets humans apart from other animals is not language or tools alone. Some animals communicate with complex signals. Some use and even shape objects as tools. The difference lies deeper.
+
+An animal that invents a better way to crack a nut may pass the skill to its young by showing them. But if that animal dies before teaching, the skill dies with it. The group must invent it again from nothing. There is no storage outside the living brain. A rare individual success remains a one-time event. It does not become a trait of the group.
+
+Humans store knowledge outside themselves. Marks on bone, clay, paper, or silicon keep information stable across time. A person can retrieve what someone else recorded long ago, even if they never met. This turns a single discovery into a shared capacity. An invention made once can be copied by many. A genius born once can teach generations never born.
+
+This mechanism changes the path of development. Major leaps in human technology follow major changes in how knowledge is stored and retrieved. Stone and clay let early cities track goods and laws. Paper and ink spread ideas across continents. The printing press made books cheap and common. Magnetic tape and hard disks let machines read and write on their own. Each jump in storage capacity or speed came before a burst of new tools and methods. The ability to record and retrieve at scale turns rare insight into common practice. Without it, progress remains local and temporary.
