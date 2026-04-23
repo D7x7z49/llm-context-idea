@@ -45,6 +45,12 @@ Agents often rely on a generic shell tool for command execution, which leads to 
 
 See [idea/script-as-tool.md](idea/script-as-tool.md) for the full design, including the path convention, environment abstraction, and security boundaries.
 
+### Temporal Clustering: Giving Agents a Sense of Time
+
+Agents treat conversation history as a flat sequence and lack any sense of time. This algorithm uses only timestamps to detect natural clusters of messages that were created close together. By tracking the relative existence weights of information pieces, it identifies when a long pause signals a likely shift in the user's thinking. The normalized variance of these weights provides a single number that indicates whether attention is evenly spread or stuck in the distant past. The method helps agents decide when to forget, when to bias retrieval toward recent clusters, and when to be cautious about linking new messages with stale history.
+
+See [idea/temporal-clustering.md](idea/temporal-clustering.md) for the full algorithm, formulas, and applications.
+
 ## A Note on Human Distinction: Recording and Retrieval
 
 What sets humans apart from other animals is not language or tools alone. Some animals communicate with complex signals. Some use and even shape objects as tools. The difference lies deeper.
