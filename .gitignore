@@ -17,4 +17,5 @@ desktop.ini
 .env.local
 
 # Log files
+tmp/
 *.log
