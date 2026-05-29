@@ -1,0 +1,57 @@
+(* prompt/pi/core/gen-prompt-file.ebnf *)
+
+(* ========================================================================= *)
+(* HOW TO WRITE A PROMPT FILE                                                *)
+(* ========================================================================= *)
+
+prompt_file = header , body , footer ;
+
+(* ========================================================================= *)
+(* HEADER                                                                    *)
+(* ========================================================================= *)
+
+header = path_comment , desc_comment ;
+
+path_comment = "<!--", path, "-->", eol ;
+desc_comment = "<!--", desc, "-->", eol ;
+
+path = ? this a file system path or URL link ? ;
+desc = ? regex:/[^\n\r]*/ ? ;
+
+(* ========================================================================= *)
+(* BODY                                                                      *)
+(* ========================================================================= *)
+
+body = body_element , { body_element } ;
+
+(*
+  NONE.
+  - scope : a label declaring the topic of the following list.
+  - list  : an unordered list of rules or notes under that scope.
+*)
+body_element = scope, list ;
+
+scope = ? regex:/[A-Z]+[A-Z ]*/ ?, eol ;
+
+list = item, { item }, eol ;
+item = "-", text , eol ;
+
+(* ========================================================================= *)
+(* FOOTER                                                                    *)
+(* ========================================================================= *)
+
+footer = "---", eol ;
+
+(* ========================================================================= *)
+(* BASIC ELEMENTS                                                            *)
+(* ========================================================================= *)
+
+(*
+  NONE.
+  - os path or command must use commonmark inline code syntax
+    e.g. `/tmp/hi.tmp`, `echo "hello world!"`
+  - link must use commonmark link syntax
+    e.g. [label](url)
+*)
+text = ? regex:/[^\n\r]*/ ? ;
+eol  = "\n" | "\r\n" ;
