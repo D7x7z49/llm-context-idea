@@ -1,9 +1,12 @@
 # pi-wal
 
-WAL (Workflow As List) extension for the pi coding agent.
+[WAL](https://github.com/D7x7z49/workflow-as-list/blob/main/SYNTAX.ebnf)
+extension for the [pi](https://github.com/earendil-works/pi) coding agent.
 
 records agent interactions as replayable .wal scripts.
 turns pi sessions into written workflow assets.
+
+source: <https://github.com/D7x7z49/llm-context-idea/tree/main/pi/extensions/wal#readme>
 
 ## concept
 

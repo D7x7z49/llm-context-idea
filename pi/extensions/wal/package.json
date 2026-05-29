@@ -1,12 +1,24 @@
 {
-  "name": "pi-wal",
-  "private": true,
+  "name": "@d7x7/pi-wal",
   "type": "module",
   "description": "WAL workflow extension for pi — record and replay agent interactions as .wal scripts",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/D7x7z49/llm-context-idea.git",
+    "directory": "pi/extensions/wal"
+  },
+  "homepage": "https://github.com/D7x7z49/llm-context-idea/tree/main/pi/extensions/wal#readme",
   "keywords": [
     "pi-package"
   ],
+  "files": [
+    "src/",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "tsx --test test/*.unit.test.ts",
     "test:integration": "tsx --test test/*.integration.test.ts"
