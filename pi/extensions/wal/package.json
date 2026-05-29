@@ -1,0 +1,25 @@
+{
+  "name": "pi-wal",
+  "private": true,
+  "type": "module",
+  "description": "WAL workflow extension for pi — record and replay agent interactions as .wal scripts",
+  "version": "0.1.0",
+  "keywords": [
+    "pi-package"
+  ],
+  "scripts": {
+    "test": "tsx --test test/*.unit.test.ts",
+    "test:integration": "tsx --test test/*.integration.test.ts"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.77.0"
+  }
+}

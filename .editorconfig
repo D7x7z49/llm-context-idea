@@ -5,8 +5,49 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Markdown file specific settings
+# Markdown
 [*.md]
 indent_style = space
 indent_size = 2
 max_line_length = 80
+
+# Python
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# TypeScript / JavaScript
+[*.{ts,js}]
+indent_style = space
+indent_size = 2
+
+# JSON
+[*.json]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+
+# JSONL
+[*.jsonl]
+indent_style = space
+insert_final_newline = false
+
+# TOML
+[*.toml]
+indent_style = space
+indent_size = 2
+
+# YAML
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Makefile
+[Makefile]
+indent_style = tab
+
+# EBNF
+[*.{ebnf}]
+indent_style = space
+indent_size = 2

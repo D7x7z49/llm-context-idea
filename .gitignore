@@ -16,5 +16,19 @@ desktop.ini
 .env
 .env.local
 
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# TypeScript / Node.js
+node_modules/
+dist/
+*.tsbuildinfo
+
 # Log files
+tmp/
 *.log
