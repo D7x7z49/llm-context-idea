@@ -4,9 +4,9 @@ This document defines the Pull Request format for this project.
 A Pull Request consists of a `title` and a `description`.
 
 ```ebnf
-(* ========================================================================= *)
-(* TOP‑LEVEL: Pull Request structure                                         *)
-(* ========================================================================= *)
+(* ========================================================================== *)
+(* TOP‑LEVEL: Pull Request structure                                          *)
+(* ========================================================================== *)
 pull_request = title, description ;
 
 (* TITLE: Conventional Commits header, used as merge commit message *)
@@ -41,9 +41,9 @@ supplement = "REFERENCES", eol, references;
 references = reference, { reference } ;
 reference  = "- ", ( "#", number | url ), eol;
 
-(* ========================================================================= *)
-(* LEXICAL BASICS                                                            *)
-(* ========================================================================= *)
+(* ========================================================================== *)
+(* LEXICAL BASICS                                                             *)
+(* ========================================================================== *)
 line    = content, eol ;
 content = ? regex:/[^\r\n]*/ ? ;
 eol     = "\n" | "\r\n" ;

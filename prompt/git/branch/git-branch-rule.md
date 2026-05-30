@@ -3,9 +3,9 @@
 This document explains the Git branch naming rules for the project.
 
 ```ebnf
-(* ========================================================================= *)
-(* TOP‑LEVEL: Branch name is either planned work or a community ticket       *)
-(* ========================================================================= *)
+(* ========================================================================== *)
+(* TOP‑LEVEL: Branch name is either planned work or a community ticket        *)
+(* ========================================================================== *)
 git-branch-name = topic | ticket ;
 
 (* PLANNED WORK: type / scope-desc *)

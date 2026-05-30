@@ -1,16 +1,16 @@
-(* prompt/pi/core/gen-prompt-file.ebnf *)
+(* prompts/pi/core/gen-exp-file.ebnf *)
 
 (* ========================================================================== *)
-(* HOW TO WRITE A PROMPT FILE                                                 *)
+(* HOW TO WRITE AN EXPERIENCE FILE                                            *)
 (* ========================================================================== *)
 
-prompt_file = header , body , footer ;
+exp_file = header , body , footer ;
 
 (* ========================================================================== *)
 (* HEADER                                                                     *)
 (* ========================================================================== *)
 
-header = path_comment , desc_comment ;
+header = path_comment , desc_comment, eol ;
 
 path_comment = "<!--", path, "-->", eol ;
 desc_comment = "<!--", desc, "-->", eol ;
@@ -22,19 +22,14 @@ desc = ? regex:/[^\n\r]*/ ? ;
 (* BODY                                                                       *)
 (* ========================================================================== *)
 
-body = body_element , { body_element } ;
+body = steps, [ notes ] ;
 
-(*
-  NONE.
-  - scope : a label declaring the topic of the following list.
-  - list  : an unordered list of rules or notes under that scope.
-*)
-body_element = scope, list ;
+steps = "STEP.", eol, step , eol ;
+notes = "NOTE.", eol, note , eol ;
 
-scope = ? regex:/[A-Z]+[A-Z ]*/ ?, eol ;
-
-list = item, { item }, eol ;
-item = "-", text , eol ;
+step = line, { line } ;
+note = line, { line } ;
+line = "-", text, eol ;
 
 (* ========================================================================== *)
 (* FOOTER                                                                     *)
