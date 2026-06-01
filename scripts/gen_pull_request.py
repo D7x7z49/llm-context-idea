@@ -9,12 +9,12 @@ from pathlib import Path
 
 TMP_ROOT = Path.cwd() / "tmp"
 
-TARGET_PR_PATH = TMP_ROOT / "pr.md"
-CONSUMED_PR_PATH = TMP_ROOT / "pr.consumed.md"
+TARGET_PR_PATH = TMP_ROOT / "pr.tmp"
+CONSUMED_PR_PATH = TMP_ROOT / "pr.consumed.tmp"
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Create a PR from ./tmp/pr.md using gh CLI.")
+    parser = argparse.ArgumentParser(description="Create a PR from ./tmp/pr.tmp using gh CLI.")
     parser.add_argument("--base", required=True, help="Target branch")
     parser.add_argument("--head", required=True, help="Source branch")
     parser.add_argument("--dry-run", action="store_true", help="Print what would be done without creating the PR")
