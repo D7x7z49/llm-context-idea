@@ -1,0 +1,48 @@
+(* prompt/dev/cli/usage.ebnf *)
+
+(* ========================================================================== *)
+(* HOW TO DESIGN A CLI USAGE DESCRIPTION DSL                                  *)
+(* ========================================================================== *)
+usage_desc
+    = { root };
+
+root
+    = { node };
+
+node
+    = command, children;
+
+children
+    = indent, content;
+
+content
+    = node
+    | property;
+
+indent
+    = "  ";
+
+(* ========================================================================== *)
+(* CONTENT BLOCKS                                                             *)
+(* ========================================================================== *)
+command
+    = "- ", usage_str, " # ", description;
+
+property
+    = "+ ", "[", key, "]", "?", " # ", description;
+
+key
+    = option
+    | argument;
+
+usage_str
+    = ? this is CLI command usage string ?;
+
+option
+    = ? this is CLI option ?;
+
+argument
+    = ? this is CLI argument ?;
+
+description
+    = ? this is (command, option, argument) description ?;
