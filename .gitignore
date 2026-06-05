@@ -32,3 +32,6 @@ dist/
 # Log files
 tmp/
 *.log
+
+# development tools
+.apiscope.config.json

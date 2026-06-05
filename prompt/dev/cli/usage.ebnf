@@ -26,10 +26,10 @@ indent
 (* CONTENT BLOCKS                                                             *)
 (* ========================================================================== *)
 command
-    = "- ", usage_str, " # ", description;
+    = "-", usage_str, "#", description;
 
 property
-    = "+ ", "[", key, "]", "?", " # ", description;
+    = "+", "[", key, "]", "?", "#", description;
 
 key
     = option
