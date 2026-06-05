@@ -1,4 +1,4 @@
-<!-- prompt/pi/core/AGENTS.md -->
+<!-- prompt/core/AGENTS.md -->
 <!-- NOTE: bond between you and me. covers how we chat and how we write files in git. -->
 
 COMMUNICATION IN CHAT

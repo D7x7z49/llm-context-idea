@@ -1,16 +1,17 @@
-(* prompts/pi/core/gen-exp-file.ebnf *)
+(* prompt/core/gen-prompt-file.ebnf *)
 
 (* ========================================================================== *)
-(* HOW TO WRITE AN EXPERIENCE FILE                                            *)
+(* HOW TO WRITE A PROMPT FILE                                                 *)
 (* ========================================================================== *)
 
-exp_file = header , body , footer ;
+(* PROJECT ROOT, format is "prompt/<target>/<aspect>/<description>.md" *)
+prompt_file = header , body , footer ;
 
 (* ========================================================================== *)
 (* HEADER                                                                     *)
 (* ========================================================================== *)
 
-header = path_comment , desc_comment, eol ;
+header = path_comment , desc_comment ;
 
 path_comment = "<!--", path, "-->", eol ;
 desc_comment = "<!--", desc, "-->", eol ;
@@ -22,14 +23,19 @@ desc = ? regex:/[^\n\r]*/ ? ;
 (* BODY                                                                       *)
 (* ========================================================================== *)
 
-body = steps, [ notes ] ;
+body = body_element , { body_element } ;
 
-steps = "STEP.", eol, step , eol ;
-notes = "NOTE.", eol, note , eol ;
+(*
+  NONE.
+  - scope : a label declaring the topic of the following list.
+  - list  : an unordered list of rules or notes under that scope.
+*)
+body_element = scope, list ;
 
-step = line, { line } ;
-note = line, { line } ;
-line = "-", text, eol ;
+scope = ? regex:/[A-Z]+[A-Z ]*/ ?, eol ;
+
+list = item, { item }, eol ;
+item = "-", text , eol ;
 
 (* ========================================================================== *)
 (* FOOTER                                                                     *)
