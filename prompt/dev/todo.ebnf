@@ -1,90 +1,96 @@
 (* prompt/dev/todo.ebnf *)
 
 (* ========================================================================== *)
-(* TODO: HOW TO DESCRIBE PROGRAM DESIGN                                       *)
+(* HOW TO WRITE A TODO FILE                                                   *)
 (* ========================================================================== *)
-
-indent
-  = "  "
-  ;
-
-todo_path
-  = "todo.md"
-  ;
-
-
-todo_file
-  = { comment | list }
-  ;
-
-(* ========================================================================== *)
-(* COMMENT BLOCK                                                              *)
-(* ========================================================================== *)
-
-comment
-  = "#", text, eol
-  ;
-
-(* ========================================================================== *)
-(* LIST BLOCK                                                                 *)
-(* ========================================================================== *)
-
-list
-  = identifier, eol, body
-  ;
-
-body
-  = step, { step }
-  ;
-
-step
-  = indent, "-", [ text | call ], eol
-  ;
-
-call
-  = "@", identifier
-  ;
-
-(* ========================================================================== *)
-(* END OF FILE                                                                *)
-(* ========================================================================== *)
-
-identifier
-  = ? regex:/[a-zA-Z_][a-zA-Z0-9_]*/ ?
-  ;
 
 (*
-  NONE.
-  - MUST "length(text) < 80"
-  - MUST "text does not contain newlines"
-  - MUST "text is imperative or interrogative"
+  Each todo block is a miniature logical reasoning unit.
+
+  PREMISE.
+  - known facts, background, or constraints
+  - declarative sentence
+
+  GOAL.
+  - target proposition or desired state
+  - declarative sentence
+
+  ACTIONS.
+  - concrete steps to reach the goal
+  - imperative sentences
+
+  imperative sentences convey the 5W1H elements naturally.
+  the who is an implied entity (the performer), not explicitly stated.
+  the remaining elements — what, when, where, why, how — should be clear.
+
+  blocks are separated by a line containing only "---".
+  the file begins with an HTML comment block that serves as a permanent
+  key‑reference for the reader.
 *)
+
+todo
+  = header_comment, block_list;
+
+(* ========================================================================== *)
+(* HEADER COMMENT                                                             *)
+(* ========================================================================== *)
+
+header_comment
+  = ? an HTML comment block starting with "<!--" and ending with "-->" ?;
+
+(* ========================================================================== *)
+(* BLOCK LIST                                                                 *)
+(* ========================================================================== *)
+
+block_list
+  = block, { sep, block };
+
+sep
+  = "---", eol;
+
+block
+  = premise, goal, actions;
+
+premise
+  = "PREMISE:", declarative, eol;
+
+goal
+  = "GOAL:", declarative, eol;
+
+actions
+  = "ACTIONS:", eol, task, { task };
+
+task
+  = "- [ ]", imperative, eol;
+
+(* ========================================================================== *)
+(* SENTENCE TYPES                                                             *)
+(* ========================================================================== *)
+
+(*
+  DECLARATIVE.
+    a statement of condition or target
+    single line, no line breaks
+
+  IMPERATIVE.
+  - an imperative sentence covering 5W1H elements
+  - the who is implied (an entity: the performer)
+  - single line, no line breaks
+*)
+
+declarative
+  = text;
+
+imperative
+  = text;
+
+(* ========================================================================== *)
+(* BASIC ELEMENTS                                                             *)
+(* ========================================================================== *)
+
 text
-  = ? regex:/[^\r\n]*/ ?
-  ;
+  = ? regex:/[^\n\r]+/ ?;
 
 eol
   = "\n"
-  | "\r\n"
-  ;
-
-
-(* ========================================================================== *)
-(* EXAMPLE                                                                    *)
-(* ========================================================================== *)
-
-
-(*
-  # This is a comment block.
-  # It can have multiple lines.
-
-  task
-    - do something important.
-    - do another thing.
-
-  plan
-    - do the first step.
-    - do the second step.
-    - @ task
-    - do the third step.
-*)
+  | "\r\n";
