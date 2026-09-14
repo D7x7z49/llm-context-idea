@@ -1,248 +1,277 @@
 ---
 name: communication-standard
 description: >
-  Apply when composing chat or dialogue messages in a two-party channel,
-  agent to agent or agent to human. Use it to keep each message single in
-  intent, explicit in scope, and grounded in shared knowledge, so the
-  exchange reduces uncertainty and moves a topic forward. Do not apply it
-  to creative writing, persuasion, or human-facing long-form text, where
-  goals other than uncertainty reduction take priority.
+  a standard for two-party information exchange that reduces uncertainty and
+  moves a topic forward. it governs communication first, and writing style
+  only in service of communication.
 ---
 
-# Communication Standard
-
-a standard for how two parties exchange information to reduce uncertainty and
-move a topic forward. it governs communication first, and writing style only
-in service of communication.
-
-this document is a Condition block. it follows its own rules, so it also
-serves as an example.
-
+Communication Standard
 ---
 
-## Scope
+a standard for how two parties exchange information to reduce uncertainty.
+it also covers how to move the topic forward.
+it governs communication first,
+and writing style only in service of communication.
 
-apply this standard only to a two-party exchange whose goal is to synchronize
-knowledge. read this section before the rest, since it sets the premise.
+```yaml
+scope:
+  apply_to:
+    - agent-agent chat, dialogue, and message passing
+    - agent-human chat, dialogue, and message passing
+  group_treatment:
+    treat any group exchange as a set of two-party channels.
+    apply the standard to one channel at a time.
+  exclude:
+    - creative writing
+    - persuasion
+    - human-facing long-form text where goals other than uncertainty reduction take priority
 
-- use it for chat, dialogue, and message passing between two agents, or
-  between an agent and a human.
-- treat any group exchange as a set of two-party channels, and apply the
-  standard to one channel at a time.
-- for creative writing, persuasion, or long-form text meant for human reading,
-  defer to the goals of that medium. this standard optimizes for clarity, not
-  for aesthetics or influence.
+core_law:
+  statement:
+    communication is safe only when it relies on [common ground].
+  definitions:
+    knowledge_set:
+      each party is modeled as a set of known propositions.
+    common_ground:
+      the intersection of both knowledge sets.
+  requirement:
+    a message MUST carry enough that the receiver can reconstruct its
+    intended meaning from [common ground] alone.
+  failures:
+    silent_complement:
+      cause:
+        a negation such as `not X` leaves the receiver to infer an unstated
+        complement over an unstated universe.
+      effect:
+        each side computes the complement over its own set.
+        the mismatch hides where neither side looks.
+    honest_deception:
+      cause:
+        a chain of true but partial statements.
+      effect:
+        the receiver completes a false whole.
+        every sentence is true, yet the completion lands outside [common ground].
+  remedy:
+    move the part left for completion into the message as explicit and
+    positive content.
 
----
+model_boundary:
+  issue_tree:
+    an earlier design (idea/issue-tree.md) types a message as task,
+    question, condition, or none.
+    those types describe message intent.
+    they do not describe knowledge alignment.
+  rule:
+    do not map an issue tree type to a cell or an outcome.
+    the two models are orthogonal.
+    each model is used on its own.
 
-## Core Law
+communication_matrix:
+  axes:
+    self_state:
+      - known
+      - unknown
+      - uncertain
+    peer_state:
+      - explicitly_known
+      - explicitly_unknown
+      - assumed_known
+      - assumed_unknown
+      - uncertain
+  cells:
+    definition:
+      one cell is one pair of self_state and peer_state.
+      the 3 x 5 axes give 15 cells.
+      a cell is written as self:peer.
+  outcomes:
+    consensus:
+      description:
+        both sides are aligned on the proposition.
+        execution MAY proceed.
+    hidden:
+      description:
+        sender knows.
+        receiver explicitly does not know.
+    blind_spot:
+      description:
+        sender does not know.
+        receiver explicitly knows.
+    unknown:
+      description:
+        neither side knows.
+    pending:
+      description:
+        at least one side is uncertain.
+        pause the topic until uncertainty is reduced.
+        [pending] is not an answer.
+        it is a decision to pause, defer, adjust scope, or obtain additional information.
+  actions:
+    check:
+      trigger: known + assumed_known
+      description:
+        sender knows.
+        sender assumes receiver knows.
+        verify the assumption.
+        on success, record [consensus].
+    hint:
+      trigger: known + assumed_unknown
+      description:
+        sender knows.
+        sender assumes receiver does not know.
+        provide information.
+    ask:
+      trigger: unknown + assumed_known
+      description:
+        sender does not know.
+        sender assumes receiver knows.
+        request information.
+    seek:
+      trigger: unknown + assumed_unknown
+      description:
+        sender does not know.
+        sender assumes receiver does not know.
+        search for information through external sources.
+  mapping:
+    - known + explicitly_known -> consensus
+    - known + explicitly_unknown -> hidden
+    - known + assumed_known -> check
+    - known + assumed_unknown -> hint
+    - unknown + explicitly_known -> blind_spot
+    - unknown + explicitly_unknown -> unknown
+    - unknown + assumed_known -> ask
+    - unknown + assumed_unknown -> seek
+    - uncertain + any -> pending
+    - any + uncertain -> pending
 
-communication is safe only when it relies on shared knowledge. this is the one
-rule the rest of the document serves.
+negation_handling:
+  principle:
+    a negation signals that [common ground] is not yet built.
+    treat it as an opening to synchronize, not as a finished statement.
+  procedure:
+    - identify the positive target behind the negation.
+    - express the target directly as a finite subset.
+    - if no positive target can be identified, mark the topic [pending] and defer further processing.
 
-- model each side as a knowledge set, and treat their intersection as the
-  common ground.
-- a message MUST carry enough that the receiver can reconstruct its meaning
-  from the common ground alone.
-- if a message forces the receiver to complete it over unshared knowledge,
-  meaning drifts in silence, and both sides still believe they agree.
+lifecycle:
+  topic:
+    open:
+      begin with [check], [hint], [ask], or [seek].
+    synchronize:
+      exchange information.
+      reduce uncertainty.
+      update the matrix.
+    consensus:
+      confirm shared understanding.
+      execution MAY begin only after [consensus].
+    pending:
+      pause the topic.
+      then refine scope, gather additional information, switch topics, or shelve the topic.
+    reopen:
+      reopen a settled topic only when new information appears.
 
-two named failures break this law. guard against both.
+intent_blocks:
+  structure:
+    a document is a sequence of intent blocks.
+    each block advances one sub-goal.
+  content:
+    paragraph:
+      at most three sentences.
+      provides context or reasoning.
+    list:
+      optional.
+      one claim, one action, or one constraint per item.
+  separation:
+    one blank line between blocks.
 
-- silent complement. a negation `not X` leaves the receiver to take a
-  complement over an unstated universe. each side computes it over its own
-  set, and the mismatch hides where neither side looks.
-- honest deception. a chain of true but partial statements lets the receiver
-  complete a false whole. every sentence is true, yet the completion lands
-  outside the common ground.
+writing_rules:
+  goal:
+    expose meaning with the least ambiguity.
+    prefer clarity over elegance.
+    prefer readability over brevity.
+  subject:
+    omit the subject when the actor is already known.
+    begin each list item with a verb.
+    prefer `create the cache` over `the system should create the cache`.
+  conditions:
+    place the condition clause before the action.
+    use `if` for a sufficient condition, and `only if` for a necessary one.
+    prefer `if validation fails, return an error` over `return an error if validation fails`.
+  relations:
+    express every relation with a natural word.
+    for logic use `if`, `unless`, `because`.
+    for order and time use `before`, `after`, `when`.
+    for structure use `from`, `to`, `with`, `without`.
+    prefer words over symbols (arrows, equals, plus).
+  rhythm:
+    use a comma to separate a condition from its action.
+    use a period to end one complete assertion.
+    default to lowercase.
+    reserve uppercase for constraint keywords.
+  terms:
+    on first use write the full name in PascalCase followed by the short form in square brackets, as in [common ground].
+    keep one term for one concept across the whole document.
+    prefer common words over rare ones.
+  markdown:
+    use markdown headings, horizontal rules, lists, inline code,
+    links, and images for structure.
+    prefer nested lists and plain wording over tables and emphasis marks.
+    write relations as words rather than arrows or emojis.
 
-both failures share one cure. move the part left for completion into the
-message, as explicit and positive content.
+constraint_strength:
+  source:
+    keywords from (RFC 2119), in full caps.
+  definitions:
+    MUST:
+      absolute requirement.
+    MUST_NOT:
+      absolute prohibition.
+      pair with the positive alternative that replaces it.
+    SHOULD:
+      strong preference.
+      deviation is allowed for a known tradeoff.
+    SHOULD_NOT:
+      strong preference against.
+    MAY:
+      truly optional.
 
----
+quality_check:
+  gate:
+    run this check before sending a message.
+  items:
+    - clear intent. the matrix outcome is identifiable.
+    - shared ground. the message relies only on [common ground] and leaves no gap to complete over unshared knowledge.
+    - explicit scope. conditions come first and referents are known.
+    - positive form. every negation is converted or deferred to [pending].
+    - one topic at a time. the message advances exactly one sub-goal.
+    - forward progress. the message reduces uncertainty and moves the topic forward.
+  summary:
+    every message SHOULD help synchronize knowledge.
+    every conversation SHOULD move toward [consensus] or [pending].
 
-## Epistemic Types
+appendix:
+  theoretical_basis:
+    purpose:
+      established results the standard rests on.
+      keywords for further study.
+    fields:
+      information_theory:
+        Shannon entropy, mutual information
+      set_theory:
+        set complement, symmetric difference
+      cybernetics:
+        Shannon-Weaver model, Ashby's law of requisite variety, feedback
+      logic:
+        contraposition, De Morgan's laws, law of excluded middle
+      pragmatics:
+        Grice's cooperative principle, maxim of quantity, conversational implicature, paltering
+      constructive_logic:
+        constructive vs non-constructive proof, Curry-Howard
+        correspondence, negation as not-P entails P implies
+        contradiction
+  constraint_keywords:
+    follow (RFC 2119).
+    an agent MAY fetch the source document for the full normative text.
+```
 
-every intent block carries exactly one type. decide the type before writing.
-
-each type comes from two judgments by the sender: the sender's own knowledge
-of a proposition, and the sender's presupposition about the receiver's
-knowledge. the first three types are constructive, since each selects and
-points to a definite subset. None is the non-constructive remainder.
-
-- Question. sender unknown, receiver assumed known. use it to request missing
-  information. a single side MAY raise it.
-- Condition. sender known, receiver assumed unknown. use it to deliver rules,
-  assumptions, constraints, or background. it narrows scope, and a single side
-  MAY raise it.
-- Task. drawn from Question and Condition once both sides confirm the needed
-  knowledge. use it for a shared conclusion that closes uncertainty and opens
-  action. it holds only when both sides agree, so it is the one point where
-  common ground MUST be truly built.
-- None. the complement of the other three. use it to hold noise, unclear
-  intent, and content that resists conversion to a positive type.
-
----
-
-## Negation Handling
-
-a negation signals that common ground is not yet built. treat it as an opening
-to synchronize, not as a finished statement.
-
-- when a message carries negative intent, raise a Question that helps the
-  sender name the positive target behind it.
-- convert `do not do X` into `do Y`, so the receiver gains a small, definite
-  subset instead of an open complement. logic offers the mechanics, through
-  contraposition and De Morgan's laws, but the goal is always a positive
-  target.
-- if a negation resists conversion, mark it None and defer it, rather than
-  passing an untrustworthy complement downstream.
-
----
-
-## Lifecycles
-
-manage a topic and the None buffer as state over time.
-
-- open a topic with a Question or a Condition, exchange until both sides
-  confirm, then draw a Task to close it.
-- hold a resolved topic as settled, and reopen it only when new information
-  arrives.
-- route noise, unclear intent, and unconverted negation into None, and give
-  each None entry a review deadline.
-- on review, convert a None entry into a Question, Condition, or Task, or
-  discard it. expired entries drop, so None never grows into a dump.
-
----
-
-## Intent Blocks
-
-a document is a sequence of intent blocks. each block advances one sub-goal.
-
-an intent block contains one paragraph and an optional list.
-
-- keep the paragraph to three sentences at most. use it to set context or give
-  reasoning.
-- use the list to deliver actions, facts, or constraints, one claim per
-  bullet.
-- separate blocks with a blank line.
-
----
-
-## Writing Rules
-
-writing exists to expose meaning with the least ambiguity. choose clarity
-before elegance, and keep brevity subordinate to readability. if brevity
-breaks understanding, readability wins.
-
-### Subject
-
-- omit the subject in list items when the actor is already known.
-- start each list item with a verb.
-- prefer `create the cache.` over `the system should create the cache.`
-
-### Conditions
-
-- place the condition clause before the action, so the reader narrows scope
-  before the action appears.
-- prefer `if validation fails, return an error.` over
-  `return an error if validation fails.`
-- use `if` for a sufficient condition, and `only if` for a necessary one.
-
-### Relations
-
-- express every relation with a natural word.
-- use `if`, `unless`, `because` for logic.
-- use `before`, `after`, `when` for order and time.
-- use `from`, `to`, `with`, `without` for structure.
-- prefer these words over symbols such as arrows, equals, or plus.
-
-### Rhythm
-
-- use a comma to separate a condition from its action, or to pace steps in a
-  sequence.
-- use a period to end one complete assertion.
-- default to lowercase. reserve uppercase for keywords defined in
-  Constraint Strength, or for terms that need weight.
-
-### Terms
-
-- on first use, write an abbreviation as its full name in PascalCase, followed
-  by the short form in parentheses, as in Common Ground (CG).
-- keep one term for one concept across the whole document.
-- prefer common words over rare ones, and write for predictable interpretation
-  over stylistic variation.
-
-### Markdown
-
-- use markdown for structure: headings, horizontal rules, lists, inline code,
-  links, images.
-- prefer nested lists and plain wording over tables and emphasis marks.
-- write relations as words rather than arrows or emojis.
-
----
-
-## Constraint Strength
-
-mark rule weight with the keywords from RFC 2119, in full caps. the three
-below are self-contained; fetch RFC 2119 for the full normative text.
-
-- MUST, MUST NOT. an absolute requirement or prohibition.
-- SHOULD, SHOULD NOT. a strong preference, with deviation allowed for a known
-  tradeoff.
-- MAY. truly optional.
-
-state a prohibition together with the positive alternative that replaces it,
-so a rule points to a target instead of an open complement.
-
----
-
-## Quality Check
-
-run this pass before sending. it repeats the key points, so treat it as the
-final gate.
-
-- clear intent. each block has one determinable type.
-- shared ground. each message relies only on the common ground, and leaves no
-  gap to complete over unshared knowledge.
-- explicit scope. conditions come first, and referents are known.
-- positive form. constraints name a target, and negations are converted or
-  deferred to None.
-- one topic at a time. each block advances a single sub-goal.
-- forward progress. every block moves the conversation, or it is deleted.
-
-every message SHOULD help synchronize knowledge. every document SHOULD reduce
-uncertainty.
-
----
-
-## Appendix: Theoretical Basis
-
-these are the established results this standard rests on. read them to
-understand why the rules hold. skip them to apply the rules, since the body
-is self-contained.
-
-each entry names a field and the specific results it contributes, as keywords
-for further study.
-
-- information theory. `Shannon entropy`, `mutual information`. grounds the view
-  that information is the reduction of uncertainty, behind Core Law and the
-  forward-progress check.
-- set theory. `set complement`, `symmetric difference`. grounds why a negation
-  is untrustworthy, and frames scope as contraction toward a definite subset.
-- cybernetics. `Shannon–Weaver model`, `Ashby's law of requisite variety`,
-  `feedback`. grounds the sender-channel-receiver picture, and locates silent
-  drift in the difference between two knowledge sets.
-- logic. `contraposition`, `De Morgan's laws`, `law of excluded middle`.
-  grounds the mechanics of converting a negation into a positive target.
-- pragmatics. `Grice's cooperative principle`, `maxim of quantity`,
-  `conversational implicature`, `paltering`. grounds honest deception: true but
-  partial statements that mislead by violating quantity, not quality.
-- constructive logic. `constructive vs non-constructive proof`,
-  `Curry–Howard correspondence`, `negation as ¬P ≡ P → ⊥`. grounds why
-  Question, Condition, and Task are constructive, while None is the
-  non-constructive remainder.
-
-the constraint keywords follow `RFC 2119`. an agent MAY fetch the source
-document for the full normative text, though the definitions in Constraint
-Strength stand on their own.
+communication standard documentation end.
