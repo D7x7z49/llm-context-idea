@@ -1,5 +1,6 @@
 <!-- references/communication-set.md -->
 
+```text
 (*
   SET.
   - 15 cells x 2 bearings.
@@ -14,6 +15,13 @@ OTHER: EK (explicitly known), EU (explicitly unknown), AK (assumed known), AU (a
 DIRECTIONS: TX (i send), RX (i receive)
 
 (*
+  PENDING.
+  pending applies to the current information on the current direct channel.
+  it stops further communication of that information at this step.
+  other information and channels remain available.
+*)
+
+(*
   RECORDS.
   each line gives the index, direction, cell, name, and meaning.
 *)
@@ -26,13 +34,13 @@ DIRECTIONS: TX (i send), RX (i receive)
 06 TX K:AU hint       provide information the peer lacks
 07 TX U:AK ask        request information the peer is assumed to hold
 08 TX U:AU seek       search external sources together or alone
-09 TX K:X  pending    peer uncertain, pause the topic
-10 TX U:X  pending    peer uncertain about my unknown, pause
-11 TX X:EK pending    i cannot parse while peer knows, pause
-12 TX X:EU pending    i cannot parse and peer lacks it, pause
-13 TX X:AK pending    i cannot parse an assumption, pause
-14 TX X:AU pending    i cannot address an assumed gap, pause
-15 TX X:X  pending    full mutual uncertainty, park the topic
+09 TX K:X  pending    peer uncertain; stop this information on this channel
+10 TX U:X  pending    peer uncertain about my unknown; stop this information on this channel
+11 TX X:EK pending    i cannot parse; stop this information on this channel
+12 TX X:EU pending    i cannot parse; stop this information on this channel
+13 TX X:AK pending    i cannot parse an assumption; stop this information on this channel
+14 TX X:AU pending    i cannot address an assumed gap; stop this information on this channel
+15 TX X:X  pending    full mutual uncertainty; stop this information on this channel
 
 16 RX K:EK consensus  peer confirms we share the fact
 17 RX K:EU hidden     peer knows what i told it i lack
@@ -42,18 +50,20 @@ DIRECTIONS: TX (i send), RX (i receive)
 21 RX K:AU hint       peer is informing me
 22 RX U:AK ask        peer requests information from me
 23 RX U:AU seek       peer proposes external search
-24 RX K:X  pending    peer signals doubt about my claim
-25 RX U:X  pending    peer signals doubt about a shared unknown
-26 RX X:EK pending    peer cannot parse what i know
-27 RX X:EU pending    peer cannot parse what neither has
-28 RX X:AK pending    peer cannot parse my assumption
-29 RX X:AU pending    peer cannot parse my assumed gap
-30 RX X:X  pending    mutual parse failure, park
+24 RX K:X  pending    peer signals doubt about my claim; stop this information on this channel
+25 RX U:X  pending    peer signals doubt about a shared unknown; stop this information on this channel
+26 RX X:EK pending    peer cannot parse what i know; stop this information on this channel
+27 RX X:EU pending    peer cannot parse what neither has; stop this information on this channel
+28 RX X:AK pending    peer cannot parse my assumption; stop this information on this channel
+29 RX X:AU pending    peer cannot parse my assumed gap; stop this information on this channel
+30 RX X:X  pending    mutual parse failure; stop this information on this channel
 
 (*
   NOTES.
   - TX entries choose an outgoing act; RX entries classify an incoming
     message.
-  - pending is not an answer; it is a decision to pause, sort, or reseek.
+  - pending is a local communication outcome for the current information and direct channel.
+  - pending is not an answer and does not stop other information or channels.
   - the query key is the cell plus direction; the index is a stable address.
 *)
+```

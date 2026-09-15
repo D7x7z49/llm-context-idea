@@ -126,6 +126,10 @@ other            = %x45.4B / %x45.55 / %x41.4B / %x41.55 / %x58
 ; - ids c01 to c30 are stable addresses.
 ; - the mapping lives in references/communication-set.md.
 ;
+; PENDING.
+; pending is a communication result for the current information and direct
+; channel. it is not a signal and cannot use the stop branch.
+;
 
 ; ==========================================================================
 ; BRANCH: pointer move, PC semantics

@@ -6,8 +6,7 @@ description: >
   only in service of communication.
 ---
 
-Communication Standard
----
+# Communication Standard
 
 a standard for how two parties exchange information to reduce uncertainty.
 it also covers how to move the topic forward.
@@ -26,6 +25,13 @@ scope:
     - creative writing
     - persuasion
     - human-facing long-form text where goals other than uncertainty reduction take priority
+
+channel_scope:
+  definition:
+    one matrix result applies to one information item on one direct channel
+    between two systems.
+    a multi-system exchange is observed as multiple direct channels.
+    the result is local to that information and channel.
 
 core_law:
   statement:
@@ -103,9 +109,10 @@ communication_matrix:
     pending:
       description:
         at least one side is uncertain.
-        pause the topic until uncertainty is reduced.
+        stop the current communication of that information on its direct channel.
         [pending] is not an answer.
-        it is a decision to pause, defer, adjust scope, or obtain additional information.
+        it is a local communication outcome.
+        it does not stop other information, channels, or systems.
   actions:
     check:
       trigger: known + assumed_known
@@ -151,7 +158,7 @@ negation_handling:
   procedure:
     - identify the positive target behind the negation.
     - express the target directly as a finite subset.
-    - if no positive target can be identified, mark the topic [pending] and defer further processing.
+    - if no positive target can be identified, mark the current information [pending] and stop its current communication on the direct channel.
 
 lifecycle:
   topic:
@@ -165,10 +172,9 @@ lifecycle:
       confirm shared understanding.
       execution MAY begin only after [consensus].
     pending:
-      pause the topic.
-      then refine scope, gather additional information, switch topics, or shelve the topic.
-    reopen:
-      reopen a settled topic only when new information appears.
+      stop the current communication of the information on its direct channel.
+      keep the result local to that information and channel.
+      leave other information and channels outside the result.
 
 intent_blocks:
   structure:
@@ -247,7 +253,7 @@ quality_check:
     - forward progress. the message reduces uncertainty and moves the topic forward.
   summary:
     every message SHOULD help synchronize knowledge.
-    every conversation SHOULD move toward [consensus] or [pending].
+    every direct communication SHOULD move toward [consensus] or [pending] for its current information.
 
 appendix:
   theoretical_basis:

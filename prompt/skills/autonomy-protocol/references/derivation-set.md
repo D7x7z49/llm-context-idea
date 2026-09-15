@@ -1,5 +1,6 @@
 <!-- references/derivation-set.md -->
 
+```text
 (*
   SET.
   - 30 directed pairs.
@@ -35,7 +36,7 @@ ACT -> INS  15 use when action output suggests a shortcut
 REF -> OBS  16 use when review finds missing evidence
 REF -> REA  17 use when review finds a weak premise
 REF -> ACT  18 use when review finds the fix and approves action
-REF -> QUE  19 use when review cannot decide and must mark pending
+REF -> QUE  19 use when review cannot decide and must open a question
 REF -> INS  20 use when review recalls an analogous case
 
 QUE -> OBS  21 use when the question needs facts before reasoning
@@ -56,3 +57,4 @@ INS -> QUE  30 use when a leap raises the next unknown
   - personality is the priority order of outgoing edges per state.
   - self loops are excluded: 6 x 5 = 30.
 *)
+```

@@ -10,8 +10,7 @@ description: >
   meaning of the two 30-entry instruction sets.
 ---
 
-Autonomy Protocol
----
+# Autonomy Protocol
 
 a playbook is a work protocol encoded as one row per minimal work unit.
 an agent executes one row at a time and jumps where the branch says.
@@ -30,6 +29,7 @@ address label | operation | branch
 - `gate` is a judgment row with at least two branch targets,
   for example `pass 100 | fail 000`.
 - `halt` is the stop row. its branch is `stop`.
+- a communication `pending` result is local to the current information and direct channel.
 
 use cases
 
