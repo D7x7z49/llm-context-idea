@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Report Markdown lines longer than a selected character count."""
+"""Report Markdown line breaks that do not follow punctuation."""
 
 import argparse
 import re
@@ -7,23 +7,37 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-# --- constants ---------------------------------------------------------
-
 FENCE_RE = re.compile(r"^ {0,3}(?P<marker>`{3,}|~{3,})(?P<tail>.*)$")
 TABLE_CELL_RE = re.compile(r"^:?-{3,}:?$")
-REPORT_GUIDANCE = """\
-it skips tables, changes no files, and lists each issue as `line: characters`;
-when editing prose, use `,` for a continuing clause or `.` for a completed sentence.
+HEADING_RE = re.compile(r"^ {0,3}#{1,6}(?:\s|$)")
+LIST_RE = re.compile(
+    r"^(?P<indent> *)(?P<marker>(?:[-+*]|\d+[.)]))[ \t]+(?P<content>.*)$"
+)
+QUOTE_RE = re.compile(r"^(?P<prefix>(?: {0,3}>[ \t]?)+)(?P<rest>.*)$")
+
+WRAP_PUNCTUATION = {",", ".", "?", "!", "，", "。", "？", "！"}
+CLOSING_MARKS = "`*_~)]}\"'”’»】）》"
+GUIDANCE = """\
+it skips fenced code, tables, headings, blank lines, and block boundaries;
+it changes no files and reports each issue as `first-second: reason`.
 """
 
 
 @dataclass(frozen=True)
+class Line:
+    number: int
+    content: str
+    quote_depth: int
+    indent: int
+    list_start: bool
+    list_indent: int | None
+
+
+@dataclass(frozen=True)
 class Violation:
-    line: int
-    characters: int
+    first_line: int
+    second_line: int
 
-
-# --- Markdown states ---------------------------------------------------
 
 def fence_match(line: str) -> re.Match[str] | None:
     return FENCE_RE.match(line)
@@ -68,107 +82,175 @@ def table_end(lines: list[str], start: int) -> int:
     return index
 
 
-# --- linting -----------------------------------------------------------
+def parse_line(number: int, raw: str) -> Line:
+    text = raw.rstrip("\r\n")
+    quote_match = QUOTE_RE.match(text)
+    if quote_match:
+        prefix = quote_match.group("prefix")
+        rest = quote_match.group("rest")
+        quote_depth = prefix.count(">")
+    else:
+        rest = text
+        quote_depth = 0
 
-def find_violations(lines: list[str], width: int) -> list[Violation]:
+    indent = len(rest) - len(rest.lstrip(" "))
+    body = rest[indent:]
+    list_match = LIST_RE.match(rest)
+    list_start = list_match is not None
+    list_indent = len(list_match.group("indent")) if list_match else None
+    if list_match:
+        body = list_match.group("content").strip()
+
+    return Line(
+        number=number,
+        content=body,
+        quote_depth=quote_depth,
+        indent=indent,
+        list_start=list_start,
+        list_indent=list_indent,
+    )
+
+
+def last_visible_character(text: str) -> str:
+    text = text.rstrip()
+    while text and text[-1] in CLOSING_MARKS:
+        text = text[:-1].rstrip()
+    return text[-1:] if text else ""
+
+
+def same_block(previous: Line, current: Line) -> bool:
+    if previous.quote_depth != current.quote_depth:
+        return False
+    if current.list_start:
+        return False
+    if previous.list_start:
+        return current.indent >= (previous.list_indent or 0) + 2
+    return current.indent >= previous.indent
+
+
+def inspect_boundary(previous: Line, current: Line) -> Violation | None:
+    if not previous.content or not current.content:
+        return None
+    if last_visible_character(previous.content) in WRAP_PUNCTUATION:
+        return None
+    return Violation(previous.number, current.number)
+
+
+def find_violations(lines: list[str]) -> list[Violation]:
     violations: list[Violation] = []
+    previous: Line | None = None
     fence: str | None = None
+    frontmatter = False
+    frontmatter_done = False
     index = 0
 
     while index < len(lines):
-        line = lines[index]
+        raw = lines[index]
+        stripped = raw.strip()
+
+        if not frontmatter_done and index == 0 and stripped == "---":
+            frontmatter = True
+            previous = None
+            index += 1
+            continue
+        if frontmatter:
+            previous = None
+            if stripped in {"---", "..."}:
+                frontmatter = False
+                frontmatter_done = True
+            index += 1
+            continue
+
         if fence is not None:
-            characters = len(line)
-            if characters > width:
-                violations.append(Violation(index + 1, characters))
-            if closes_fence(line, fence):
+            previous = None
+            if closes_fence(raw, fence):
                 fence = None
             index += 1
             continue
 
-        opening = fence_match(line)
+        opening = fence_match(raw)
         if opening:
+            previous = None
             fence = opening.group("marker")
-            characters = len(line)
-            if characters > width:
-                violations.append(Violation(index + 1, characters))
             index += 1
             continue
 
         if is_table_header(lines, index):
+            previous = None
             index = table_end(lines, index)
             continue
 
-        characters = len(line)
-        if characters > width:
-            violations.append(Violation(index + 1, characters))
+        if not stripped or HEADING_RE.match(raw):
+            previous = None
+            index += 1
+            continue
+
+        current = parse_line(index + 1, raw)
+        if previous is not None and same_block(previous, current):
+            violation = inspect_boundary(previous, current)
+            if violation is not None:
+                violations.append(violation)
+
+        previous = current
         index += 1
 
     return violations
 
 
-# --- output ------------------------------------------------------------
-
 def print_report(
-    reports: list[tuple[Path, list[Violation]]], width: int
+    reports: list[tuple[Path, list[Violation]]]
 ) -> int:
     total = sum(len(violations) for _, violations in reports)
     if total == 0:
         print("ok")
         return 0
 
-    print(f"this check reports Markdown lines longer than {width} characters.")
-    print(REPORT_GUIDANCE, end="")
+    print("this check reports Markdown line breaks that do not follow punctuation.")
+    print(GUIDANCE, end="")
     print()
 
     for path, violations in reports:
         print(path)
         for violation in violations:
-            print(f"- {violation.line}: {violation.characters}")
+            print(
+                f"- {violation.first_line}-{violation.second_line}: "
+                "line break does not follow punctuation"
+            )
         print()
 
     files = len(reports)
-    line_word = "line" if total == 1 else "lines"
+    boundary_word = "boundary" if total == 1 else "boundaries"
     file_word = "file" if files == 1 else "files"
-    verb = "exceeds" if total == 1 else "exceed"
-    print(f"{total} {line_word} {verb} {width} characters in {files} {file_word}.")
+    print(f"{total} wrap {boundary_word} reported in {files} {file_word}.")
     return 0
 
 
-# --- cli ---------------------------------------------------------------
-
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="report Markdown lines longer than a selected character count"
+        description="report Markdown line breaks that do not follow punctuation"
     )
-    parser.add_argument("--width", type=int, required=True)
     parser.add_argument("paths", nargs="+")
     args = parser.parse_args(argv)
-    if args.width < 1:
-        parser.error("--width must be positive")
+    for value in args.paths:
+        if Path(value).suffix != ".md":
+            parser.error(f"{value}: expected a .md file")
     return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    paths = [Path(value) for value in args.paths]
-    for path in paths:
-        if path.suffix != ".md":
-            print(f"{path}: expected a .md file", file=sys.stderr)
-            return 2
-
     reports: list[tuple[Path, list[Violation]]] = []
-    for path in paths:
+    for value in args.paths:
+        path = Path(value)
         try:
             lines = path.read_text(encoding="utf-8").splitlines()
         except (OSError, UnicodeError) as error:
             print(f"{path}: {error}", file=sys.stderr)
             return 2
-        violations = find_violations(lines, args.width)
+        violations = find_violations(lines)
         if violations:
             reports.append((path, violations))
-
-    return print_report(reports, args.width)
+    return print_report(reports)
 
 
 if __name__ == "__main__":
