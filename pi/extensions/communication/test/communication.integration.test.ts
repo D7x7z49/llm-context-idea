@@ -1,19 +1,19 @@
 // integration test for pi-good-communication extension using the Pi SDK.
 // uses an in-memory session and does not require an LLM call for blocked input.
 
+import { dirname, join } from "node:path";
+import process from "node:process";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import {
   createAgentSession,
   DefaultResourceLoader,
   getAgentDir,
-  SessionManager,
-  SettingsManager,
   type SessionEntry,
+  SessionManager,
   type SessionMessageEntry,
+  SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import { describe, it } from "node:test";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import process from "node:process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -67,11 +67,11 @@ describe("pi-good-communication integration", () => {
     }
   });
 
-  it("src-msg blocks a prompt beyond the character limit", async () => {
+  it("src-msg blocks a prompt beyond the unit limit", async () => {
     const { sessionManager, session } = await setup();
 
     try {
-      const text = "A".repeat(200);
+      const text = "中".repeat(200);
       await session.prompt(text);
 
       const userTexts = messageEntries(sessionManager.getEntries()).map(textFromUserMessage);
@@ -83,11 +83,11 @@ describe("pi-good-communication integration", () => {
     }
   });
 
-  it("src-cmd blocks a command beyond the character limit", async () => {
+  it("src-cmd blocks a command beyond the unit limit", async () => {
     const { sessionManager, session } = await setup();
 
     try {
-      const command = "A".repeat(200);
+      const command = `${"echo focus && ".repeat(12)}echo focus`;
       await session.prompt(`! ${command}`);
 
       const bashCommands = messageEntries(sessionManager.getEntries())
