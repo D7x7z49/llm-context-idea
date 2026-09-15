@@ -26,9 +26,9 @@ function appendFailureHint(
   content: Array<{ type: string; text?: string }>,
 ): Array<{ type: string; text?: string }> {
   const hint =
-    "this command failed. " +
-    "consider extracting it into a standalone script " +
-    "to scripts/ or tmp/scripts/ for debugging and re-runs?";
+    "this command failed. "
+    + "consider extracting it into a standalone script "
+    + "to scripts/ or tmp/scripts/ for debugging and re-runs?";
   return [...content, { type: "text", text: `[pi-good-communication] ${hint}` }];
 }
 
@@ -78,8 +78,14 @@ describe("appendFailureHint", () => {
     const result = appendFailureHint([]);
     const text = result[0]?.text ?? "";
 
-    if (!text.includes("scripts/")) throw new Error("missing scripts/ path");
-    if (!text.includes("tmp/scripts/")) throw new Error("missing tmp/scripts/ path");
-    if (!text.endsWith("?")) throw new Error("hint should end with ? (interrogative)");
+    if (!text.includes("scripts/")) {
+      throw new Error("missing scripts/ path");
+    }
+    if (!text.includes("tmp/scripts/")) {
+      throw new Error("missing tmp/scripts/ path");
+    }
+    if (!text.endsWith("?")) {
+      throw new Error("hint should end with ? (interrogative)");
+    }
   });
 });

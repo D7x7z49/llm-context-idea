@@ -34,7 +34,7 @@ export default function (pi: ExtensionAPI) {
           : resolve(ctx.cwd, defaultWalPath(ctx));
         mkdirSync(dirname(filepath), { recursive: true });
         const steps = buildWalSteps(ctx);
-        const content = WAL_HEADER + "\n" + steps.join("\n") + "\n";
+        const content = `${WAL_HEADER}\n${steps.join("\n")}\n`;
         writeFileSync(filepath, content, "utf8");
         ctx.ui.notify(`WAL: saved ${steps.length} steps to ${basename(filepath)}`, "info");
         return;
@@ -44,8 +44,8 @@ export default function (pi: ExtensionAPI) {
         const steps = buildWalSteps(ctx);
         const preview =
           steps.length > 0
-            ? steps.slice(0, 20).join("\n") +
-              (steps.length > 20 ? `\n... (${steps.length} total)` : "")
+            ? steps.slice(0, 20).join("\n")
+              + (steps.length > 20 ? `\n... (${steps.length} total)` : "")
             : "(empty session)";
         ctx.ui.notify(`WAL preview:\n${preview}`, "info");
         return;
@@ -83,7 +83,9 @@ function buildWalSteps(ctx: { sessionManager: { getBranch(): unknown[] } }): str
   }>;
 
   for (const entry of entries) {
-    if (entry.type !== "message" || !entry.message) continue;
+    if (entry.type !== "message" || !entry.message) {
+      continue;
+    }
     const msg = entry.message;
     const ts = entry.timestamp ? Date.parse(entry.timestamp) : 0;
 
@@ -91,7 +93,9 @@ function buildWalSteps(ctx: { sessionManager: { getBranch(): unknown[] } }): str
       for (const block of msg.content) {
         if (block.type === "text" && block.text) {
           const text = block.text.trim();
-          if (text) steps.push({ kind: "text", text, timestamp: ts });
+          if (text) {
+            steps.push({ kind: "text", text, timestamp: ts });
+          }
         }
       }
       continue;

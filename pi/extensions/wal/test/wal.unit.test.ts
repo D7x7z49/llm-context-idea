@@ -26,7 +26,9 @@ function buildWalSteps(ctx: { sessionManager: { getBranch(): MockEntry[] } }): s
   const entries = ctx.sessionManager.getBranch();
 
   for (const entry of entries) {
-    if (entry.type !== "message" || !entry.message) continue;
+    if (entry.type !== "message" || !entry.message) {
+      continue;
+    }
     const msg = entry.message;
     const ts = entry.timestamp ? Date.parse(entry.timestamp) : 0;
 
@@ -34,7 +36,9 @@ function buildWalSteps(ctx: { sessionManager: { getBranch(): MockEntry[] } }): s
       for (const block of msg.content) {
         if (block.type === "text" && block.text) {
           const text = block.text.trim();
-          if (text) steps.push({ kind: "text", text, timestamp: ts });
+          if (text) {
+            steps.push({ kind: "text", text, timestamp: ts });
+          }
         }
       }
       continue;

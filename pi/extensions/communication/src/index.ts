@@ -25,10 +25,10 @@ const MSG = {
     `command blocked by src-cmd guard (${length} chars, max ${MAX_CHARS}).`,
 
   dstBashBlockReason: (length: number) =>
-    `command too long (${length} chars, max ${MAX_CHARS}). ` +
-    "write a standalone script to scripts/ or tmp/scripts/ instead. " +
-    "this gives you idempotency, makes debugging easier, " +
-    "and leaves an auditable record.",
+    `command too long (${length} chars, max ${MAX_CHARS}). `
+    + "write a standalone script to scripts/ or tmp/scripts/ instead. "
+    + "this gives you idempotency, makes debugging easier, "
+    + "and leaves an auditable record.",
 };
 
 function blockResult(msg: string) {
@@ -46,7 +46,9 @@ export default function (pi: ExtensionAPI) {
   // --- src-msg: user prompt length guard ---
 
   pi.on("input", (event, ctx) => {
-    if (!isBlocked(event.text.length)) return;
+    if (!isBlocked(event.text.length)) {
+      return;
+    }
     ctx.ui.notify(MSG.srcMsgBlock(event.text.length), "error");
     return { action: "handled" };
   });
@@ -54,7 +56,9 @@ export default function (pi: ExtensionAPI) {
   // --- src-cmd: user shell command length guard ---
 
   pi.on("user_bash", (event, ctx) => {
-    if (!isBlocked(event.command.length)) return;
+    if (!isBlocked(event.command.length)) {
+      return;
+    }
     ctx.ui.notify(
       `src-cmd: command blocked at ${event.command.length} chars (max ${MAX_CHARS}).`,
       "error",
@@ -65,11 +69,17 @@ export default function (pi: ExtensionAPI) {
   // --- dst-bash: agent shell execution length guard ---
 
   pi.on("tool_call", (event, ctx) => {
-    if (event.toolName !== "bash") return;
+    if (event.toolName !== "bash") {
+      return;
+    }
     const command = event.input.command as string;
-    if (!command) return;
+    if (!command) {
+      return;
+    }
 
-    if (!isBlocked(command.length)) return;
+    if (!isBlocked(command.length)) {
+      return;
+    }
 
     ctx.ui.notify(
       `dst-bash: agent command blocked at ${command.length} chars (max ${MAX_CHARS}).`,
@@ -84,13 +94,17 @@ export default function (pi: ExtensionAPI) {
   // --- dst-bash: failed execution afterthought ---
 
   pi.on("tool_result", (event) => {
-    if (!isBashToolResult(event)) return;
-    if (!event.isError) return;
+    if (!isBashToolResult(event)) {
+      return;
+    }
+    if (!event.isError) {
+      return;
+    }
 
     const hint =
-      "this command failed. " +
-      "consider extracting it into a standalone script " +
-      "to scripts/ or tmp/scripts/ for debugging and re-runs?";
+      "this command failed. "
+      + "consider extracting it into a standalone script "
+      + "to scripts/ or tmp/scripts/ for debugging and re-runs?";
 
     return {
       content: [...event.content, { type: "text", text: `[pi-good-communication] ${hint}` }],

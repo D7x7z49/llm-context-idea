@@ -9,13 +9,13 @@
   "scripts": {
     "check": "tsc --noEmit",
     "format": "biome format --write .",
-    "format:check": "biome format .",
+    "lint": "biome lint . --error-on-warnings",
     "test": "npm run test --workspaces",
     "test:integration": "npm run test:integration --workspaces"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
-    "tsx": "^4.22.3",
+    "@biomejs/biome": "^2.5.13",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   }
 }
