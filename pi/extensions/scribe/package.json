@@ -12,6 +12,7 @@
   "keywords": [
     "pi-package"
   ],
+  "license": "MIT",
   "files": [
     "src/",
     "README.md"
