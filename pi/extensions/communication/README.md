@@ -114,4 +114,3 @@ it acts mechanically, with no prompts and no confirmations.
 a passing signal gets measured once, then continues unchanged.
 
 this is a communication discipline, not a security boundary.
-when used with pi-wal, the guards enforce clean structure and WAL records clean steps.

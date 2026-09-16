@@ -10,7 +10,9 @@ pi/
 ├── package.json          shared dev tooling
 ├── tsconfig.json
 ├── extensions/           pi extensions (typescript)
-│   └── wal/              WAL workflow extension
+│   ├── communication/    message shape guards
+│   ├── scribe/           user input export
+│   └── wal/              WAL workflow extension (dormant)
 └── skills/               pi skills (markdown)
 ```
 
@@ -20,7 +22,7 @@ each extension is self-contained with its own package.json.
 develop with `pi -e` pointing to the source entry:
 
 ```bash
-pi -e pi/extensions/wal/src/index.ts
+pi -e pi/extensions/scribe/src/index.ts
 ```
 
 no build step needed — pi uses jiti for runtime ts compilation.
@@ -37,8 +39,8 @@ declare as peerDependencies with `"*"` range:
 typebox
 ```
 
-for other npm deps, add to the extension's own `package.json`
-and run `npm install` in that directory.
+for other npm deps, add them to the extension's own `package.json`.
+then run `npm install` in that directory.
 
 ## loading strategy
 
@@ -46,7 +48,7 @@ and run `npm install` in that directory.
 dev phase     pi -e pi/extensions/<name>/src/index.ts
 daily use     ln -s pi/extensions/<name> .pi/extensions/<name>
 release       git tag → pi install git:github.com/D7x7z49/llm-context-idea@tag
-npm publish   pi install npm:@d7x7z49/pi-<name>
+npm publish   pi install npm:@d7x7/pi-<name>
 ```
 
 ## reference

@@ -1,7 +1,7 @@
 # pi-wal
 
-[WAL](https://github.com/D7x7z49/workflow-as-list/blob/main/SYNTAX.ebnf)
-extension for the [pi](https://github.com/earendil-works/pi) coding agent.
+[WAL](https://github.com/D7x7z49/workflow-as-list/blob/main/SYNTAX.ebnf) is a workflow language.
+this package adds it to the [pi](https://github.com/earendil-works/pi) coding agent.
 
 records agent interactions as replayable .wal scripts.
 turns pi sessions into written workflow assets.
@@ -34,8 +34,7 @@ every step starts with `- `:
 - ! command    shell execution
 ```
 
-this extension supports the minimal WAL subset:
-no imports, no variables, no jumps.
+this extension supports the minimal WAL subset: no imports, no variables, no jumps.
 
 ## wal format (subset)
 
@@ -56,8 +55,7 @@ no imports, no variables, no jumps.
 
 save current session as a `.wal` file.
 
-if path is omitted, auto-generates filename:
-`tmp/wal/<session>-<timestamp>.wal`
+if path is omitted, the file goes to `tmp/wal/<session>-<timestamp>.wal`.
 
 ```text
 iterate session branch entries
@@ -82,10 +80,10 @@ user !command          "- ! <command>"
 everything else        skipped
 ```
 
-only the initiating side is captured:
-user text (LLM prompts) and user !command (shell execution).
-LLM tool calls, assistant text, file operations are
-responses — not requests — and are skipped.
+only the initiating side is captured.
+that side is user text (LLM prompts) and user !command (shell execution).
+LLM tool calls, assistant text, and file operations are responses, not requests,
+so they are skipped.
 
 ## implementation notes
 
