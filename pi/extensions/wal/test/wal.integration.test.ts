@@ -1,6 +1,12 @@
 // integration test for pi-wal extension using pi SDK.
 // uses in-memory session with injected messages — no LLM calls.
 
+import { readFileSync, unlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import process from "node:process";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import {
   createAgentSession,
   DefaultResourceLoader,
@@ -8,12 +14,6 @@ import {
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import { describe, it } from "node:test";
-import { readFileSync, unlinkSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { tmpdir } from "node:os";
-import process from "node:process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

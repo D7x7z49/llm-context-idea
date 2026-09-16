@@ -9,9 +9,9 @@
 // two statement types, no indentation, no imports, no variables.
 // represents the fundamental message-list abstraction of agent interaction.
 
+import { mkdirSync, writeFileSync } from "node:fs";
+import { basename, dirname, extname, join, resolve } from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { writeFileSync, mkdirSync } from "node:fs";
-import { resolve, basename, extname, dirname, join } from "node:path";
 
 const WAL_HEADER = [
   `# WAL — simplified subset of Workflow As List`,
