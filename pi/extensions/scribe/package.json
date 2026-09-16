@@ -1,0 +1,39 @@
+{
+  "name": "@d7x7/pi-user-scribe",
+  "type": "module",
+  "description": "raw user input export for pi - a readable projection of the human side of a session",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/D7x7z49/llm-context-idea.git",
+    "directory": "pi/extensions/scribe"
+  },
+  "homepage": "https://github.com/D7x7z49/llm-context-idea/tree/main/pi/extensions/scribe#readme",
+  "keywords": [
+    "pi-package"
+  ],
+  "files": [
+    "src/",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "tsx --test test/*.unit.test.ts",
+    "test:integration": "tsx --test test/*.integration.test.ts"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.85.1",
+    "@earendil-works/pi-tui": "^0.85.1"
+  }
+}

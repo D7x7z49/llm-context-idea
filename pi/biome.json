@@ -39,7 +39,7 @@
       }
     },
     {
-      "includes": ["extensions/wal/src/index.ts"],
+      "includes": ["extensions/wal/src/index.ts", "extensions/scribe/src/index.ts"],
       "linter": {
         "rules": {
           "suspicious": {
