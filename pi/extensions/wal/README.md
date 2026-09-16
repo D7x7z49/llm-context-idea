@@ -10,18 +10,22 @@ source: <https://github.com/D7x7z49/llm-context-idea/tree/main/pi/extensions/wal
 
 ## status
 
-dormant, not deprecated.
+dormant, not deprecated, frozen since 2026-09-16.
 the recorded workflow stays for a future replay use, `wal_run`.
 
-for raw user input capture and analysis,
-use `@d7x7/pi-user-scribe`, which exports the human side as plain text.
+the WAL syntax comes from [workflow-as-list](https://github.com/D7x7z49/workflow-as-list),
+a separate project that moves slowly.
+this extension follows that syntax, so it waits for the project to settle.
+
+raw user input capture moved to `@d7x7/pi-user-scribe`,
+which exports the human side of a session as plain text.
 
 ```text
 design                     done
 skeleton                   done
 /wal save + preview        done
 unit + integration tests   done
-wal_run                    todo (future)
+wal_run                    todo (waits for the upstream project)
 ```
 
 ## concept

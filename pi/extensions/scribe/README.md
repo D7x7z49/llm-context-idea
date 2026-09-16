@@ -111,4 +111,7 @@ import, replay, workflow   dropped
 
 ## related
 
-- `@d7x7/pi-wal`: the earlier workflow extension, replaced by this export tool.
+- `@d7x7/pi-wal`: the earlier workflow extension, now frozen.
+  it derives from [workflow-as-list](https://github.com/D7x7z49/workflow-as-list),
+  which moves slowly.
+  this export tool replaces its raw input capture.
