@@ -8,6 +8,22 @@ turns pi sessions into written workflow assets.
 
 source: <https://github.com/D7x7z49/llm-context-idea/tree/main/pi/extensions/wal#readme>
 
+## status
+
+dormant, not deprecated.
+the recorded workflow stays for a future replay use, `wal_run`.
+
+for raw user input capture and analysis,
+use `@d7x7/pi-user-scribe`, which exports the human side as plain text.
+
+```text
+design                     done
+skeleton                   done
+/wal save + preview        done
+unit + integration tests   done
+wal_run                    todo (future)
+```
+
 ## concept
 
 WAL is a line-oriented workflow language.
@@ -81,13 +97,3 @@ responses — not requests — and are skipped.
 ## dependencies
 
 none beyond pi core. `node:fs` and `node:path` are built-in.
-
-## status
-
-```text
-design                    done
-skeleton                  done
-/wal save + preview       done
-wal_run                   todo (future)
-test                      todo
-```
