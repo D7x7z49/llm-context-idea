@@ -2,7 +2,7 @@
   "name": "@d7x7/pi-good-communication",
   "type": "module",
   "description": "good communication discipline for pi — keep conversations oral, complex ideas written",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/D7x7z49/llm-context-idea.git",
