@@ -11,16 +11,17 @@ PACKAGE MANAGEMENT
 SCRIPTS
 
 - `npm test` runs unit tests across all workspaces.
-- `npm test -w pi-wal` runs tests for a single extension.
+- `npm test -w extensions/wal` runs tests for a single extension.
 - `npm run test:integration` runs integration tests across all workspaces.
-- `npm run format` applies prettier to all source files.
 - `npm run check` runs `tsc --noEmit` for type checking.
+- `npm run lint` runs Biome lint checks and fails on warnings.
+- `npm run format` applies Biome formatting to all source files.
 
 CODE STYLE
 
 - english for all text in git: comments, commit messages, docs.
 - two-space indent for typescript, json, toml, yaml, markdown.
-- prettier at workspace root handles all formatting.
+- biome at workspace root handles all formatting.
 
 EXTENSION STRUCTURE
 

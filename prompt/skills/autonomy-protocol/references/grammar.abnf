@@ -1,0 +1,162 @@
+; prompt/skills/autonomy-protocol/references/grammar.abnf
+
+; ==========================================================================
+; CORE FROM RFC 5234
+; ==========================================================================
+ALPHA  = %x41-5A / %x61-7A
+DIGIT  = %x30-39
+SP     = %x20
+WSP    = SP / %x09
+HSPACE = 1*WSP
+EOL    = LF / CRLF
+LF     = %x0A
+CRLF   = %x0D.0A
+VCHAR  = %x21-7E
+
+;
+; LINE ENDINGS.
+; EOL accepts LF and CRLF. repository files use LF.
+;
+
+; ==========================================================================
+; DOCUMENT
+; ==========================================================================
+playbook      = *(blank / comment / host-marker / row)
+blank         = *WSP EOL
+comment       = line-comment / block-comment
+comment-text  = *(WSP / VCHAR)
+line-comment  = "(*" comment-text "*)" EOL
+block-comment = "(*" EOL *comment-line "*)" EOL
+comment-line  = 2WSP comment-text EOL
+host-marker   = "<!--" comment-text "-->" EOL
+
+;
+; COMMENT.
+; - a comment starts with the open marker and ends at the first close marker.
+; - line form: one line; ordinary comments have no right padding.
+; - block form: the open marker alone, body lines indented by two, and the
+; close marker alone.
+;
+; HOST MARKER.
+; a host project may append an html marker, such as the markdown anchor
+; line that its own tooling maintains.
+;
+
+; ==========================================================================
+; ROW: one minimal work unit per line
+; ==========================================================================
+row       = address SP row-label HSPACE "|" HSPACE
+            operation HSPACE "|" HSPACE branch EOL
+address   = 3DIGIT
+row-label = 1*ALPHA
+
+;
+; ADDRESS.
+; - hundreds digit = region, the autonomy area.
+; - tens digit = row order inside a region.
+; - ones digit = reserved slot for a later insertion.
+;
+; LABEL.
+; one word, upper case, the title of the work unit.
+;
+
+; ==========================================================================
+; OPERATION: the encoding set of both instruction families
+; ==========================================================================
+operation = derivation-op / communication-op / signal
+signal    = %x67.61.74.65 / %x68.61.6C.74
+
+;
+; GATE.
+; a judgment row. its branch holds pass and one more named exit.
+;
+; HALT.
+; the stop row. its branch is stop.
+;
+
+; ==========================================================================
+; DERIVATION SET: 30 directed pairs over 6 states
+; ==========================================================================
+derivation-op   = derivation-edge SP derivation-id
+derivation-id   = %x64 2DIGIT
+derivation-edge = edge-from-obs / edge-from-rea / edge-from-act
+                / edge-from-ref / edge-from-que / edge-from-ins
+
+edge-from-obs = %x4F.42.53.2D.3E.52.45.41 / %x4F.42.53.2D.3E.51.55.45 / %x4F.42.53.2D.3E.49.4E.53
+              / %x4F.42.53.2D.3E.41.43.54 / %x4F.42.53.2D.3E.52.45.46
+
+edge-from-rea = %x52.45.41.2D.3E.4F.42.53 / %x52.45.41.2D.3E.41.43.54 / %x52.45.41.2D.3E.51.55.45
+              / %x52.45.41.2D.3E.49.4E.53 / %x52.45.41.2D.3E.52.45.46
+
+edge-from-act = %x41.43.54.2D.3E.4F.42.53 / %x41.43.54.2D.3E.52.45.41 / %x41.43.54.2D.3E.51.55.45
+              / %x41.43.54.2D.3E.52.45.46 / %x41.43.54.2D.3E.49.4E.53
+
+edge-from-ref = %x52.45.46.2D.3E.4F.42.53 / %x52.45.46.2D.3E.52.45.41 / %x52.45.46.2D.3E.41.43.54
+              / %x52.45.46.2D.3E.51.55.45 / %x52.45.46.2D.3E.49.4E.53
+
+edge-from-que = %x51.55.45.2D.3E.4F.42.53 / %x51.55.45.2D.3E.52.45.41 / %x51.55.45.2D.3E.41.43.54
+              / %x51.55.45.2D.3E.52.45.46 / %x51.55.45.2D.3E.49.4E.53
+
+edge-from-ins = %x49.4E.53.2D.3E.4F.42.53 / %x49.4E.53.2D.3E.52.45.41 / %x49.4E.53.2D.3E.41.43.54
+              / %x49.4E.53.2D.3E.52.45.46 / %x49.4E.53.2D.3E.51.55.45
+
+;
+; IDS.
+; - 6 x 5 = 30 directed pairs; self loops are excluded.
+; - ids d01 to d30 are stable addresses.
+; - the mapping lives in references/derivation-set.md.
+;
+
+; ==========================================================================
+; COMMUNICATION SET: 15 cells x 2 bearings
+; ==========================================================================
+communication-op = direction SP cell SP communication-id
+communication-id = %x63 2DIGIT
+direction        = %x54.58 / %x52.58
+cell             = self ":" other
+self             = %x4B / %x55 / %x58
+other            = %x45.4B / %x45.55 / %x41.4B / %x41.55 / %x58
+
+;
+; DIRECTION.
+; TX = i send, RX = i receive.
+;
+; IDS.
+; - 15 cells x 2 bearings = 30 ids, c01 to c30.
+; - ids c01 to c30 are stable addresses.
+; - the mapping lives in references/communication-set.md.
+;
+; PENDING.
+; pending is a communication result for the current information and direct
+; channel. it is not a signal and cannot use the stop branch.
+;
+
+; ==========================================================================
+; BRANCH: pointer move, PC semantics
+; ==========================================================================
+branch   = exit-word HSPACE address
+            *(HSPACE "|" HSPACE exit-word HSPACE address)
+          / %x73.74.6F.70
+next     = %x6E.65.78.74 HSPACE address
+passfail = %x70.61.73.73 HSPACE address HSPACE "|" HSPACE %x66.61.69.6C HSPACE address
+stop     = %x73.74.6F.70
+
+exit-word = 1*(ALPHA / %x2D)
+
+;
+; EXIT WORD.
+; a lowercase word names the move: next, pass, fail, evidence,
+; re-reason, or unexpected.
+;
+
+; ==========================================================================
+; EXAMPLES: encoded rows of a playbook
+; ==========================================================================
+;
+; EXAMPLES.
+; 000 DIR | RX K:AU c21 | next 010
+; 010 QUE | OBS->QUE d02 | next 020
+; 020 GATE | gate | pass 100 | fail 000
+; 320 GATE | gate | pass 600 | evidence 100 | re-reason 300
+; 830 HALT | halt | stop
+;

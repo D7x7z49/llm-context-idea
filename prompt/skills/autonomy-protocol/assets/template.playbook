@@ -1,0 +1,34 @@
+<!-- assets/template.playbook -->
+
+(*
+  SKELETON.
+  - copy this file, rename it, then add regions.
+  - row form: address label | operation | branch.
+  - the row grammar lives in references/grammar.abnf.
+  - the composition rules live in references/composition-rules.md.
+*)
+
+(* ========================================================================== *)
+(* REGION 0: the human boundary                                               *)
+(* ========================================================================== *)
+(*
+  ROWS 000-030.
+  - receive a direction.
+  - question its scope.
+  - gate the scope.
+  - halt after the gate passes.
+*)
+000 DIR  | RX K:AU c21  | next 010
+010 QUE  | OBS->QUE d02 | next 020
+020 GATE | gate         | pass 030 | fail 000
+030 HALT | halt         | stop
+
+(*
+  EXTENSION PLAN.
+  100 seek standard solutions, 200 observe state, 300 reason in draft,
+  600 act and check, 800 converge and report.
+
+  INSERTION.
+  - a free ones digit takes a new row: 010 while 000 and 020 exist.
+  - a new region takes a fresh hundreds digit.
+*)

@@ -1,26 +1,24 @@
-// test/communication.integration.test.ts
-// integration test for pi-good-communication extension using pi SDK.
-// uses in-memory session — no LLM calls.
+// integration test for pi-good-communication extension using the Pi SDK.
+// uses an in-memory session and does not require an LLM call for blocked input.
 
+import { dirname, join } from "node:path";
+import process from "node:process";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import {
-  AuthStorage,
   createAgentSession,
   DefaultResourceLoader,
   getAgentDir,
-  ModelRegistry,
+  type SessionEntry,
   SessionManager,
+  type SessionMessageEntry,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import { describe, it } from "node:test";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function setup() {
-  const sm = SessionManager.inMemory(process.cwd());
-  const authStorage = AuthStorage.create();
-  const modelRegistry = ModelRegistry.create(authStorage);
+  const sessionManager = SessionManager.inMemory(process.cwd());
   const settingsManager = SettingsManager.inMemory();
 
   const loader = new DefaultResourceLoader({
@@ -32,101 +30,75 @@ async function setup() {
   await loader.reload();
 
   const { session } = await createAgentSession({
-    sessionManager: sm,
-    authStorage,
-    modelRegistry,
+    sessionManager,
     settingsManager,
     resourceLoader: loader,
   });
 
-  return { sm, session };
+  return { sessionManager, session };
 }
 
-function longText(minLen: number): string {
-  return "A".repeat(minLen);
+function messageEntries(entries: SessionEntry[]): SessionMessageEntry[] {
+  return entries.filter((entry): entry is SessionMessageEntry => entry.type === "message");
+}
+
+function textFromUserMessage(entry: SessionMessageEntry): string {
+  if (entry.message.role !== "user") {
+    return "";
+  }
+  if (typeof entry.message.content === "string") {
+    return entry.message.content;
+  }
+
+  return entry.message.content
+    .filter((block): block is { type: "text"; text: string } => "text" in block)
+    .map((block) => block.text)
+    .join("\n");
 }
 
 describe("pi-good-communication integration", () => {
-  it("src-msg allows short prompts", async () => {
+  it("src-msg allows a short prompt", async () => {
     const { session } = await setup();
 
     try {
       await session.prompt("hello");
     } finally {
-      try {
-        session.dispose();
-      } catch {
-        /* ignore */
-      }
+      session.dispose();
     }
   });
 
-  it("src-msg blocks prompts exceeding WARN_MAX", async () => {
-    const { sm, session } = await setup();
+  it("src-msg blocks a prompt beyond the unit limit", async () => {
+    const { sessionManager, session } = await setup();
 
     try {
-      const text = longText(200);
+      const text = "中".repeat(200);
       await session.prompt(text);
 
-      // after blocked input, no user message with the long text should appear
-      const entries = sm.getEntries();
-      const userMsgs = entries.filter(
-        (e) =>
-          e.type === "message" &&
-          e.message &&
-          (e.message as Record<string, unknown>).role === "user",
-      );
-
-      for (const msg of userMsgs) {
-        const content = (msg.message as Record<string, unknown>).content as Array<{
-          text?: string;
-        }>;
-        if (!content) continue;
-        for (const block of content) {
-          if (block.text && block.text.length > 120) {
-            throw new Error("blocked prompt was stored as user message");
-          }
-        }
+      const userTexts = messageEntries(sessionManager.getEntries()).map(textFromUserMessage);
+      if (userTexts.some((value) => value.includes(text))) {
+        throw new Error("blocked prompt was stored as a user message");
       }
     } finally {
-      try {
-        session.dispose();
-      } catch {
-        /* ignore */
-      }
+      session.dispose();
     }
   });
 
-  it("src-cmd blocks long commands", async () => {
-    const { sm, session } = await setup();
+  it("src-cmd blocks a command beyond the unit limit", async () => {
+    const { sessionManager, session } = await setup();
 
     try {
-      const cmd = longText(200);
-      await session.prompt(`! ${cmd}`);
+      const command = `${"echo focus && ".repeat(12)}echo focus`;
+      await session.prompt(`! ${command}`);
 
-      // verify the long command was not executed
-      const entries = sm.getEntries();
-      const bashMsgs = entries.filter(
-        (e) =>
-          e.type === "message" &&
-          e.message &&
-          (e.message as Record<string, unknown>).role === "bashExecution",
-      );
+      const bashCommands = messageEntries(sessionManager.getEntries())
+        .filter((entry) => entry.message.role === "bashExecution")
+        .map((entry) => (entry.message.role === "bashExecution" ? entry.message.command : ""));
 
-      for (const msg of bashMsgs) {
-        const msgObj = msg.message as Record<string, unknown>;
-        const command = msgObj.command as string;
-        if (!command) continue;
-        if (command.length > 120) {
-          throw new Error(`blocked command was executed: ${command.slice(0, 50)}...`);
-        }
+      if (bashCommands.includes(command)) {
+        throw new Error("blocked command was executed");
       }
     } finally {
-      try {
-        session.dispose();
-      } catch {
-        /* ignore */
-      }
+      session.dispose();
     }
   });
 });

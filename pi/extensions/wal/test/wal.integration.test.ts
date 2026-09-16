@@ -1,50 +1,33 @@
-// test/wal.integration.test.ts
 // integration test for pi-wal extension using pi SDK.
 // uses in-memory session with injected messages — no LLM calls.
 
+import { readFileSync, unlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import process from "node:process";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import {
-  AuthStorage,
   createAgentSession,
   DefaultResourceLoader,
   getAgentDir,
-  ModelRegistry,
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import { describe, it } from "node:test";
-import { readFileSync, unlinkSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { tmpdir } from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-interface UserLike {
-  role: "user";
-  content: { type: "text"; text: string }[];
-  timestamp: number;
-}
+type AppendableMessage = Parameters<SessionManager["appendMessage"]>[0];
 
-interface BashLike {
-  role: "bashExecution";
-  command: string;
-  output: string;
-  exitCode: number;
-  cancelled: boolean;
-  truncated: boolean;
-  excludeFromContext?: boolean;
-  timestamp: number;
-}
-
-function u(text: string): UserLike {
+function u(text: string): AppendableMessage {
   return {
     role: "user",
-    content: [{ type: "text" as const, text }],
+    content: [{ type: "text", text }],
     timestamp: Date.now(),
   };
 }
 
-function b(command: string, exclude?: boolean): BashLike {
+function b(command: string, exclude?: boolean): AppendableMessage {
   return {
     role: "bashExecution",
     command,
@@ -59,8 +42,6 @@ function b(command: string, exclude?: boolean): BashLike {
 
 async function setup() {
   const sm = SessionManager.inMemory(process.cwd());
-  const authStorage = AuthStorage.create();
-  const modelRegistry = ModelRegistry.create(authStorage);
   const settingsManager = SettingsManager.inMemory();
 
   const loader = new DefaultResourceLoader({
@@ -73,8 +54,6 @@ async function setup() {
 
   const { session } = await createAgentSession({
     sessionManager: sm,
-    authStorage,
-    modelRegistry,
     settingsManager,
     resourceLoader: loader,
   });
@@ -86,8 +65,8 @@ describe("pi-wal integration", () => {
   it("/wal save includes user text and bashExecution messages", async () => {
     const { sm, session } = await setup();
 
-    sm.appendMessage(b("git status") as any);
-    sm.appendMessage(u("check the diff") as any);
+    sm.appendMessage(b("git status"));
+    sm.appendMessage(u("check the diff"));
 
     const path = join(tmpdir(), `wal-test-${Date.now()}.wal`);
     await session.prompt(`/wal save ${path}`);
@@ -117,8 +96,8 @@ describe("pi-wal integration", () => {
   it("/wal save skips !! commands", async () => {
     const { sm, session } = await setup();
 
-    sm.appendMessage(b("sensitive", true) as any);
-    sm.appendMessage(u("public") as any);
+    sm.appendMessage(b("sensitive", true));
+    sm.appendMessage(u("public"));
 
     const path = join(tmpdir(), `wal-test-${Date.now()}.wal`);
     await session.prompt(`/wal save ${path}`);
