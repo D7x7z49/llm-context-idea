@@ -2,7 +2,7 @@
   "name": "@d7x7/pi-wal",
   "type": "module",
   "description": "WAL workflow extension for pi — record and replay agent interactions as .wal scripts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/D7x7z49/llm-context-idea.git",
