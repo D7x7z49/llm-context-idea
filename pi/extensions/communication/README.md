@@ -114,3 +114,8 @@ it acts mechanically, with no prompts and no confirmations.
 a passing signal gets measured once, then continues unchanged.
 
 this is a communication discipline, not a security boundary.
+
+## related
+
+- `@d7x7/pi-user-scribe`: exports the human side of a session as plain text.
+  the guards keep the exchange short, the export keeps the user words readable.
