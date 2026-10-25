@@ -1,4 +1,4 @@
-<!-- prompt/skills/communication-standard/references/writing-rules.md -->
+<!-- pi/skills/communication-standard/references/writing-rules.md -->
 <!-- NOTE: detailed rules for expressing a communication standard with low ambiguity. -->
 
 PURPOSE

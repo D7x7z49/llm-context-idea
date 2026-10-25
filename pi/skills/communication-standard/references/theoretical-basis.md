@@ -1,4 +1,4 @@
-<!-- prompt/skills/communication-standard/references/theoretical-basis.md -->
+<!-- pi/skills/communication-standard/references/theoretical-basis.md -->
 <!-- NOTE: research terms that inform the communication standard without proving it. -->
 
 PURPOSE

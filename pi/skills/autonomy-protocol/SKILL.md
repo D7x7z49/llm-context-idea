@@ -6,7 +6,7 @@ description: >
   addresses, derivation keys such as `d16`, communication keys such as `c21`,
   gate rows, or halt rows.
 ---
-<!-- prompt/skills/autonomy-protocol/SKILL.md -->
+<!-- pi/skills/autonomy-protocol/SKILL.md -->
 <!-- NOTE: compose and verify assembly-style work protocols with one row per minimal work unit. -->
 
 PURPOSE

@@ -5,7 +5,7 @@ description: >
   must reduce uncertainty, synchronize knowledge, or move a topic toward a
   shared decision.
 ---
-<!-- prompt/skills/communication-standard/SKILL.md -->
+<!-- pi/skills/communication-standard/SKILL.md -->
 <!-- NOTE: guide two-party communication that reduces uncertainty and moves a topic forward. -->
 
 PURPOSE
