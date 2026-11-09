@@ -7,6 +7,7 @@ skills teach pi domain-specific workflows.
 
 ## skills
 
+- `ask-deepwiki-answer/` answer a question about a public repository from its DeepWiki.
 - `autonomy-protocol/` compose, format, and lint `.playbook` work protocols.
 - `communication-standard/` guide two-party communication toward a shared decision.
 - `fetch-deepseek-share/` fetch a DeepSeek shared conversation as raw JSON.
