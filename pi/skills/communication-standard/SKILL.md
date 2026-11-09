@@ -1,9 +1,8 @@
 ---
 name: communication-standard
 description: >
-  guide two-party communication between humans and agents. use when a message
-  must reduce uncertainty, synchronize knowledge, or move a topic toward a
-  shared decision.
+  keep any exchange between two parties on common ground, so knowledge is shared and the topic moves toward a decision.
+  use when composing, reading, or revising a message, a dialogue, or a group thread.
 ---
 <!-- pi/skills/communication-standard/SKILL.md -->
 <!-- NOTE: guide two-party communication that reduces uncertainty and moves a topic forward. -->

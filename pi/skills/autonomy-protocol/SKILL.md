@@ -1,10 +1,8 @@
 ---
 name: autonomy-protocol
 description: >
-  compose, format, and lint autonomy protocol playbooks. use when writing,
-  editing, checking, or interpreting `.playbook` files with three-digit
-  addresses, derivation keys such as `d16`, communication keys such as `c21`,
-  gate rows, or halt rows.
+  write and check a working manual that lets an agent plan and run work on its own.
+  use when writing or reading a `.playbook`, or when a task needs explicit gates, branches, and halt points.
 ---
 <!-- pi/skills/autonomy-protocol/SKILL.md -->
 <!-- NOTE: compose and verify assembly-style work protocols with one row per minimal work unit. -->
