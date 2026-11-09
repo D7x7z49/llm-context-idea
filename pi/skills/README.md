@@ -10,6 +10,7 @@ skills teach pi domain-specific workflows.
 - `autonomy-protocol/` compose, format, and lint `.playbook` work protocols.
 - `communication-standard/` guide two-party communication toward a shared decision.
 - `fetch-deepseek-share/` fetch a DeepSeek shared conversation as raw JSON.
+- `rule-writing/` compose, review, and lint a rule set shared by agent and human.
 
 ## references and scripts
 
